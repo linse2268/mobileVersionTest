@@ -641,10 +641,12 @@
         if(currentlyDriving){
           mobileDriveButton.innerText = "stopp";
           mobileDriveButton.style = "background-color: rgba(255, 0, 0, 0.2);"
+          currentlyDriving = true;
         }
         else{
           mobileDriveButton.innerText = "Drive";
           mobileDriveButton.style = "background-color: rgba(60, 255, 0, 0.2);"
+          currentlyDriving = false;
         }
       }
 
