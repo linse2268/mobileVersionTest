@@ -614,25 +614,32 @@
 
     // Check if permission is needed for iOS 13+ and some Android versions
     function requestOrientationPermission() {
-      if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-        DeviceOrientationEvent.requestPermission()
-          .then((permissionState) => {
-            if (permissionState === 'granted') {
-              startOrientationUpdates();
-              bodyContentAskDivice.style.display = 'none';
-              mobileSteeringSite.style = "display: flex;"
-            } else {
-              askGyroskopePermissionH1.innerText = "Sorry, it won't work without your permission."
-            }
-          })
-          .catch(console.error);
-      } else {
-        // Start immediately if no permission request is required
-        startOrientationUpdates();
-        bodyContentAskDivice.style.display = 'none';
-        mobileSteeringSite.style = "display: flex;";
-      }
-    }
+  // Check if the device requires permission for orientation access (iOS)
+  if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+    DeviceOrientationEvent.requestPermission()
+      .then((permissionState) => {
+        if (permissionState === 'granted') {
+          // Permission granted, start updates and adjust UI
+          startOrientationUpdates();
+          bodyContentAskDivice.style.display = 'none';
+          mobileSteeringSite.style.display = 'flex';
+        } else {
+          // Permission denied, notify the user
+          askGyroskopePermissionH1.innerText = "Sorry, it won't work without your permission.";
+        }
+      })
+      .catch((error) => {
+        console.error("Error requesting orientation permission:", error);
+        askGyroskopePermissionH1.innerText = "An error occurred. Please try again.";
+      });
+  } else {
+    // For devices that don't require permission, start updates directly
+    startOrientationUpdates();
+    bodyContentAskDivice.style.display = 'none';
+    mobileSteeringSite.style.display = 'flex';
+  }
+}
+
 
     
 
