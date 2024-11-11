@@ -9,8 +9,7 @@
       href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap"
       rel="stylesheet"
     />
-    <link rel="icon" href="https://squidpod.github.io/images/pics/final_light.png">
-    <title>Curiosity</title>
+    <title>08:40 uhr</title>
     <style>
       :root {
         --backgroundcolor: rgb(53, 53, 53);
@@ -441,7 +440,7 @@
             <li>Gewicht: 400g</li>
             <li>Höhe: 20cm</li>
             <li>Breite: 20cm</li>
-            <li>Länge: 29cm</li>
+            <li>Länge: 30cm</li>
             <li>Empfang: definiert nach Reichweite des benutzten Netzwerks</li>
           </ul>
           <div id="settingsConatiner">
@@ -514,7 +513,7 @@
           <div loadDivs class="button loadDivs" id="banner" >
             <h5 id="linsenpodBanner">LinsenPod</h5>
             <h3 id="curiosityBanner"><b>Curiosity</b></h3>
-            
+            <button id="menuOpenButton"></button>
           </div>
     </div>
 
@@ -529,9 +528,9 @@
 
           <div id="mobileOtherContent" class="loadDivs">
             <button id="mobileDriveButton" class="mobileButtonOrDivs mobileLoadDivs" onclick="driveMode()">Drive</button>
-            <button id="beta" class="mobileButtonOrDivs mobileLoadDivs">Test</button>
-            <button id="gamma" class="mobileButtonOrDivs mobileLoadDivs">Test</button>
-            <button class="mobileButtonOrDivs mobileLoadDivs">Test</button>
+            <button class="mobileButtonOrDivs mobileLoadDivs" onclick="mobileSpeedUp()">+</button>
+            <button class="mobileButtonOrDivs mobileLoadDivs" onclick="mobileSpeedDown()">-</button>
+            <button id="betaGamma" class="mobileButtonOrDivs mobileLoadDivs">Hello</button>
             <div id="mobileBannerLogoDiv"  class="mobileButtonOrDivs mobileLoadDivs"><img id="mobileBannerLogo" src="https://squidpod.github.io/images/pics/final_light.png" alt=""></div>
           </div>
           
@@ -539,31 +538,64 @@
     <script>
       let beta = 0; //Lenkachse
       let gamma = 0; //Beschleunigungsachse
-    const betaDisplay = document.getElementById("beta");
-    const gammaDisplay = document.getElementById("gamma");
+    const betaGammaDisplay = document.getElementById("betaGamma");
+    
     const permissionButton = document.getElementById("mobilePermissionButton");
 
       /*
       normale Tiltwerte:
-      -beschleunigungsachse (gamma): (-65) - (-45)
+      -beschleunigungsachse (gamma): (-65) - (-55)
       -lenkachse (beta): (-5) - (+5) 
       */
 
     function updateDisplay() {
-      betaDisplay.textContent = beta;
-      gammaDisplay.textContent = gamma;
+      betaGammaDisplay.innerText = beta , gamma;
       
       if (currentlyDriving) {
+
+        //handling left and right turn
         if (beta > 10) {
           mobileDriveButton.style.backgroundColor = "pink"; // right turn
+          sendButtonState("d");
         } else if (beta < -10) {
           mobileDriveButton.style.backgroundColor = "blue"; // left turn
+          sendButtonState("a");
         } else {
-          mobileDriveButton.style.backgroundColor = "rgba(255, 0, 0, 0.2)"; // neutral
+          mobileDriveButton.style. backgroundColor = "rgba(255, 0, 0, 0.2)"; // neutral
+          sendButtonState("d_release");
+          sendButtonState("a_release");
+
+        }
+//stufen problematisch wegen Pfeiltasten und variable auf ESP und nicht website
+        //handling accelaration
+        if(gamma < -65 || gamma > -55){
+            
+              if(gamma >= -54){
+                sendButtonState("w");
+                sendButtonState("s_release");
+              }
+              else if(gamma <= -66){
+                sendButtonState("s");
+                sendButtonState("w_release");
+              }
+              else{
+                sendButtonState("w_release");
+                sendButtonState("s_release");
+              }
+            }
         }
       }
 
-    }
+      function mobileSpeedDown(){
+        sendButtonState("ArrowLeft");
+        console.log("speed down");
+      }
+      function mobileSpeedUp(){
+        sendButtonState("ArrowRight");
+        console.log("speed up");
+      }
+
+    
 
     function startOrientationUpdates() {
       if (window.DeviceOrientationEvent) {
@@ -604,9 +636,8 @@
 
     
 
-//loadingFunctions-loadingFunctions-loadingFunctions-loadingFunctions-loadingFunctions-loadingFunctions
-//loadingFunctions-loadingFunctions-loadingFunctions-loadingFunctions-loadingFunctions-loadingFunctions
-//loadingFunctions-loadingFunctions-loadingFunctions-loadingFunctions-loadingFunctions-loadingFunctions
+
+//loadingFunctions
       const body = document.getElementById("body");
       const bodyContentAskDivice = document.getElementById(
         "bodyContentAskDivice"
