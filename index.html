@@ -553,9 +553,9 @@
       gammaDisplay.textContent = gamma;
       
       if (currentlyDriving) {
-        if (beta > 5) {
+        if (beta > 10) {
           mobileDriveButton.style.backgroundColor = "pink"; // right turn
-        } else if (beta < -5) {
+        } else if (beta < -10) {
           mobileDriveButton.style.backgroundColor = "blue"; // left turn
         } else {
           mobileDriveButton.style.backgroundColor = "rgba(255, 0, 0, 0.2)"; // neutral
